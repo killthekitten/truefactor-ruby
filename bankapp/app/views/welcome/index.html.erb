@@ -1,0 +1,5 @@
+<% if @user %>
+  Hello, <%=@user.email%>. <a href="/sign_out">Sign out.</a>
+<%else%>
+  <a href="/truefactor">Sign in</a>
+<%end%>
