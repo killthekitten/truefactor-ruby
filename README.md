@@ -1,6 +1,6 @@
 # Installation
 
-Truefactor.io can be your only authentication option or you can add it to existing auth schemes such as devise, authlogic etc. The installation just 5 minutes. <a href="http://cobased.com/">Check out the demo how it looks like.</a>
+Truefactor.io can be your only authentication option or you can add it to existing auth schemes such as devise, authlogic etc. The installation takes up to 5 minutes. <a href="http://cobased.com/">Check out the demo how it looks like.</a>
 
 
 ```
