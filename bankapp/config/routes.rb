@@ -2,6 +2,7 @@ Rails.application.routes.draw do
 
   match "/truefactor", to: 'application#truefactor', via: [:get, :post]
   get '/sign_out',to:'application#sign_out'
+  get '/send_money', to: 'welcome#send_money'
   root 'welcome#index'
 
   # The priority is based upon order of creation: first created -> highest priority.

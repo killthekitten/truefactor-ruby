@@ -6,4 +6,12 @@ class WelcomeController < ApplicationController
     else
     end
   end
+
+  def send_money
+    return unless truefactor_approve! "#{params[:amount]}" #Do you want to send #{params[:amount]} to #{params[:destination]}?"
+    puts 'done'
+    render text: 'sent'
+
+  end
+
 end
