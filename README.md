@@ -1,11 +1,14 @@
 # Installation
 
+Truefactor.io can be your only authentication option or you can add it to existing auth schemes such as devise, authlogic etc. The installation just 5 minutes.
+
+
 ```
-# (optional) email field is required and used as identifier (tfid)
+# (starting from scratch?) email field is required and used as identifier (tfid)
 rails new bankapp
 rails g model User email:string
 
-# add to Gemfile
+# add to Gemfile (use edge version for now)
 gem 'truefactor', github: 'sakurity/truefactory-ruby'
 
 # add 'truefactor' field to your users/admins/customers etc table
@@ -22,9 +25,10 @@ include Truefactor::Controller
 get '/truefactor', to: 'application#truefactor'
 
 
-# almost done! Put this anywhere to let users sign in and sign up with one button
+# Final touch! Put this anywhere to let users sign in and sign up with one button
 <a href="/truefactor"><img width="180px" src="https://truefactor.io/signin.png" />
 ```
+
 
 (optional) add your app description and icon to /config/initializers/truefactor.rb
 ```
@@ -33,7 +37,9 @@ Truefactor::Settings[:icon] = "" #must be https
 #Truefactor::Settings[:tfid_type] = :username #email by default
 ```
 
-(optional) if you have any *critical actions* in your app: money transfer, destroying a repo or showing an API key, you can protect them from XSS/extensions/widgets and even device compromise with *Verified Requests*. Just add Truefactor JS SDK:
+This is it! Other features (verified requests/responses/paired devices) are optional and mostly useful for very sensitive applications. Pull requests on how to simplify the installation are welcome.
+
+If you have any *critical actions* in your app: money transfer, destroying a repo or showing an API key, you can protect them from XSS/extensions/widgets and even device compromise with *Verified Requests*. Just add Truefactor JS SDK:
 ```
 <script src="https://truefactor.io/sdk.js"></script>
 <% if current_user %>
@@ -79,7 +85,7 @@ end
 ```
 
 
-# (optional) if you require other fields but tfid, like username, you might need to autofill them in models/user.rb and let the user update later.
+(optional) if you require other fields but tfid, like username, you might need to autofill them in models/user.rb and let the user update later.
 ```
 before_save do
   if self.username.blank?
@@ -87,3 +93,8 @@ before_save do
   end
 end
 ```
+
+### Also
+
+* Disable password resets by email for truefactor-enabled users
+
