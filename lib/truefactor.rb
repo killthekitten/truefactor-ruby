@@ -3,7 +3,13 @@ require 'uri'
 require 'openssl'
 
 module Truefactor
-  ORIGIN = 'https://truefactor.io'
+  Settings = {
+    web_origin: 'https://truefactor.io',
+    desktop_origin: 'truefactor://',
+    tfid_type: :email
+  }
+
+
   module User
     def truefactor_signatures(challenge, raw = false)
       seed1, seed2 = self.truefactor.split(',')
@@ -68,7 +74,13 @@ module Truefactor
 
 
   module Controller
+
+    def truefactor_callback
+
+    end
+
     def truefactor
+      tfid_type = Truefactor::Settings[:tfid_type]
       if cookies[:truefactor_state] && cookies.delete(:truefactor_state) == params[:state] 
         cookies[:truefactor_response] = { 
           value: params[:signs], 
@@ -78,23 +90,25 @@ module Truefactor
       elsif session[:truefactor_state] && session[:truefactor_state] == params[:state]
         session.delete :truefactor_state
         if params[:seeds]
-          user = ::User.find_by_email params[:tfid]
+          user = ::User.find_by(tfid_type => params[:tfid])
           if user      
-            flash[:alert] = 'email already exists'
+            flash[:alert] = "#{tfid_type} already exists"
           else
-            user = ::User.new email: params[:tfid], truefactor: params[:seeds],username: SecureRandom.hex(8), password: SecureRandom.hex(8)
+            user = ::User.new 
+            puts tfid_type
+            user.send "#{tfid_type}=", params[:tfid]
+            user.truefactor = params[:seeds]
             user.save(validate: false)
             sign_in user
           end
           redirect_to '/'
-
         elsif params[:signs]
           if !session[:old_env]
-            user = ::User.find_by_email params[:tfid]
+            user = ::User.find_by(tfid_type => params[:tfid])
             v = if user && user.valid_truefactor?('login', params[:signs])
               sign_in user
             else
-              flash[:alert] = 'Invalid email or signature'
+              flash[:alert] = "Invalid #{tfid_type} or signature"
             end
             redirect_to '/'
 
@@ -102,21 +116,11 @@ module Truefactor
             session[:truefactor_signs] = params[:signs]
             redirect_to session[:old_env]["path"]+'?'+session[:old_env]["params"].to_query
           end
-
-
         else
           raise "nothing"
         end
       else
-
-        session[:truefactor_state] = SecureRandom.hex
-        redirect_to "#{Truefactor::ORIGIN}/#" + {
-          action: "register",
-          origin_name: "This is Bank App!",
-          origin: "http://lh:3001",
-          icon: "https://bankapp.com/icon",
-          state: session[:truefactor_state]
-        }.to_query
+        redirect_to_truefactor action: "register", tfid_type: Truefactor::Settings[:tfid_type]
       end
 
     end
@@ -144,7 +148,6 @@ module Truefactor
       if session[:old_env] && session[:old_env]["path"] == path && session[:truefactor_signs]
         # we are back
         session.delete :old_env
-        puts "old env"
         if truefactor_current_user.valid_truefactor?(challenge, session.delete(:truefactor_signs))
 
           return true
@@ -157,18 +160,25 @@ module Truefactor
           path: path,
           params: params
         }
-
-        session[:truefactor_state] = SecureRandom.hex
-        redirect_to "#{Truefactor::ORIGIN}/#" + {
-          action: "auth",
-          origin: "http://lh:3001",
-          challenge: challenge,
-          state: session[:truefactor_state]
-        }.to_query
-
+        redirect_to_truefactor action: "auth", challenge: challenge
+        
         false
-      
+    end
 
+
+    def redirect_to_truefactor(args)
+      origin = Truefactor::Settings[:web_origin]
+
+      session[:truefactor_state] = SecureRandom.hex
+      args[:state] = session[:truefactor_state]
+      
+      current_origin = "#{request.protocol}#{request.host_with_port}"
+      args[:origin] = Truefactor::Settings[:origin] || current_origin
+
+      args[:origin_name] = Truefactor::Settings[:origin_name]
+      args[:icon] = Truefactor::Settings[:icon]
+      
+      redirect_to "#{origin}/#" + args.to_query
     end
   end
 end
