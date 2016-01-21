@@ -22,11 +22,11 @@ module Truefactor
         elsif session[:truefactor_state] && session[:truefactor_state] == params[:state]
           session.delete :truefactor_state
           if params[:seeds]
-            user = Truefactor.model.find_by(tfid_type => params[:tfid])
+            user = ::Truefactor._model_.find_by(tfid_type => params[:tfid])
             if user
               flash[:alert] = "#{tfid_type} already exists"
             else
-              user = Truefactor.model.new
+              user = ::Truefactor._model_.new
               puts tfid_type
               user.send "#{tfid_type}=", params[:tfid]
               user.truefactor = params[:seeds]
@@ -36,7 +36,7 @@ module Truefactor
             redirect_to '/'
           elsif params[:signs]
             if !session[:old_env]
-              user = Truefactor.model.find_by(tfid_type => params[:tfid])
+              user = ::Truefactor._model_.find_by(tfid_type => params[:tfid])
               v = if user && user.valid_truefactor?('login', params[:signs])
                     truefactor_sign_in user
                   else
@@ -59,7 +59,7 @@ module Truefactor
 
       def truefactor_current_user
         if session[:user_id]
-          @user ||= Truefactor.model.find(session[:user_id])
+          @user ||= ::Truefactor._model_.find(session[:user_id])
         else
           false
         end

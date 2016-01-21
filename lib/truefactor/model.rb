@@ -6,7 +6,6 @@ module Truefactor
       def truefactorize
         class_exec do
           send :include, Truefactor::Model::TruefactorizedMethods
-          ::Truefactor.model_name = name.classify
         end
       end
     end

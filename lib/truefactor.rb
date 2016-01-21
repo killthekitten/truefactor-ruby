@@ -12,7 +12,7 @@ require 'openssl'
 
 module Truefactor
   class << self
-    attr_accessor :configuration, :model_name
+    attr_accessor :configuration
   end
 
   def self.configure
@@ -20,8 +20,12 @@ module Truefactor
     yield(configuration)
   end
 
+  def self._model_
+    self.configuration.model_class.constantize
+  end
+
   class Configuration
-    attr_accessor :web_origin, :desktop_origin, :tfid_type, :origin_name, :origin, :icon, :model_name
+    attr_accessor :web_origin, :desktop_origin, :tfid_type, :origin_name, :origin, :icon, :model_class
 
     def initialize
       @web_origin     = 'https://truefactor.io'

@@ -6,4 +6,5 @@ Truefactor.configure do |c|
   # c.tfid_type      = :email
   # c.origin_name    = 'Truefactorized app'
   # c.icon
+  c.model_class      = '<%=class_name%>'
 end
