@@ -1,6 +1,6 @@
 # Installation
 
-Truefactor.io can be your only authentication option or you can add it to existing auth schemes such as devise, authlogic etc. The installation takes up to 5 minutes. <a href="http://cobased.com/">Check out the demo how it looks like.</a>
+Truefactor.io can be your only authentication option or you can add it to existing auth schemes such as devise, authlogic etc. The installation takes up to 5 minutes. <a href="http://cobased.com/">Check out the demo how it looks like.</a>  Also you can take a look at another <a href="https://thawing-falls-18565.herokuapp.com/"demo</a> with a github <a href="https://github.com/avyy/truefactor-bankapp">repo</a>.
 
 
 ```
