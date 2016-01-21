@@ -31,14 +31,14 @@ module Truefactor
               user.send "#{tfid_type}=", params[:tfid]
               user.truefactor = params[:seeds]
               user.save(validate: false)
-              sign_in user
+              truefactor_sign_in user
             end
             redirect_to '/'
           elsif params[:signs]
             if !session[:old_env]
               user = Truefactor.model.find_by(tfid_type => params[:tfid])
               v = if user && user.valid_truefactor?('login', params[:signs])
-                    sign_in user
+                    truefactor_sign_in user
                   else
                     flash[:alert] = "Invalid #{tfid_type} or signature"
                   end
