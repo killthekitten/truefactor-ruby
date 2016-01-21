@@ -1,6 +1,14 @@
 require 'rails/generators'
+require 'rails/generators/migration'
+require 'rails/generators/active_record'
 module Truefactor
   class InstallGenerator < Rails::Generators::NamedBase
+    include Rails::Generators::Migration
+
+    def self.next_migration_number(dirname)
+      ActiveRecord::Generators::Base.next_migration_number(dirname)
+    end
+
     source_root File.expand_path("../../templates", __FILE__)
 
     desc "Adds a route, generates a migration, truefactorizes an application_controller and a model with the given NAME"
@@ -10,7 +18,7 @@ module Truefactor
     end
 
     def add_truefactor_migration
-      template "migration.rb", "db/migrate/add_truefactor_to_#{table_name}.rb"
+      migration_template "migration.rb", "db/migrate/add_truefactor_to_#{table_name}.rb"
     end
 
     def truefactorize_model

@@ -33,7 +33,7 @@ module Truefactor
               user.save(validate: false)
               truefactor_sign_in user
             end
-            redirect_to '/'
+            return redirect_to '/'
           elsif params[:signs]
             if !session[:old_env]
               user = ::Truefactor._model_.find_by(tfid_type => params[:tfid])
@@ -42,11 +42,11 @@ module Truefactor
                   else
                     flash[:alert] = "Invalid #{tfid_type} or signature"
                   end
-              redirect_to '/'
+              return redirect_to '/'
 
             else
               session[:truefactor_signs] = params[:signs]
-              redirect_to session[:old_env]["path"]+'?'+session[:old_env]["params"].to_query
+              return redirect_to session[:old_env]["path"]+'?'+session[:old_env]["params"].to_query
             end
           else
             raise "nothing"
@@ -72,7 +72,6 @@ module Truefactor
 
       def truefactor_sign_in(user)
         session[:user_id] = user.id
-        redirect_to '/'
       end
 
       def truefactor_approve!(challenge)
