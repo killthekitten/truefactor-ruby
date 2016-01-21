@@ -21,7 +21,7 @@ module Truefactor
   end
 
   class Configuration
-    attr_accessor :web_origin, :desktop_origin, :tfid_type, :origin_name, :icon, :model_name
+    attr_accessor :web_origin, :desktop_origin, :tfid_type, :origin_name, :origin, :icon, :model_name
 
     def initialize
       @web_origin     = 'https://truefactor.io'

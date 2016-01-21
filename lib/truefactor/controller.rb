@@ -104,7 +104,7 @@ module Truefactor
         args[:state] = session[:truefactor_state]
 
         current_origin = "#{request.protocol}#{request.host_with_port}"
-        args[:origin] = origin || current_origin
+        args[:origin] = Truefactor.configuration.origin || current_origin
 
         args[:origin_name] = Truefactor.configuration.origin_name
         args[:icon] = Truefactor.configuration.icon
