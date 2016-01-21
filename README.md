@@ -1,6 +1,6 @@
 # Installation
 
-Truefactor.io can be your only authentication option or you can add it to existing auth schemes such as devise, authlogic etc. The installation takes up to 5 minutes. <a href="http://cobased.com/">Check out the demo how it looks like.</a>
+Truefactor.io can be your only authentication option or you can add it to existing auth schemes such as devise, authlogic etc. The installation takes up to 5 minutes. <a href="http://cobased.com/">Check out the demo how it looks like.</a>  Also you can take a look at another <a href="https://thawing-falls-18565.herokuapp.com/"demo</a> with a github <a href="https://github.com/avyy/truefactor-bankapp">repo</a>.
 
 
 ```
@@ -11,30 +11,24 @@ rails g model User email:string
 # add to Gemfile (use edge version for now)
 gem 'truefactor', github: 'sakurity/truefactory-ruby'
 
-# add 'truefactor' field to your users/admins/customers etc table
-rails g migration AddTruefactorToUsers truefactor:text
-rake db:migrate
+# run a generator to install it
+rails g truefactor:install User
 
-# add to models/user.rb
-include Truefactor::User
+# Final touch! Put this anywhere in views to let users sign in and sign up with one button
+<%= link_to_truefactor %>
 
-# add to controllers/application_controller.rb
-include Truefactor::Controller
-
-# create a route in routes.rb
-get '/truefactor', to: 'application#truefactor'
-
-
-# Final touch! Put this anywhere to let users sign in and sign up with one button
-<a href="/truefactor"><img width="180px" src="https://truefactor.io/signin.png" />
+# Or something like:
+link_to 'Sign in', truefactor_path
 ```
 
 
-(optional) add your app description and icon to /config/initializers/truefactor.rb
+(optional) add your app description and icon to generated /config/initializers/truefactor.rb
 ```
-Truefactor::Settings[:origin_name] = "Cobased - import your trips"
-Truefactor::Settings[:icon] = "" #must be https
-#Truefactor::Settings[:tfid_type] = :username #email by default
+Truefactor.configure do |c|
+  c.origin_name = "Cobased - import your trips"
+  c.icon = "" #must be https
+  c.tfid_type = :username #email by default
+end
 ```
 
 This is it! Other features (verified requests/responses/paired devices) are optional and mostly useful for very sensitive applications. Pull requests on how to simplify the installation are welcome.
@@ -98,3 +92,6 @@ end
 
 * Disable password resets by email for truefactor-enabled users
 
+## License
+
+The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
